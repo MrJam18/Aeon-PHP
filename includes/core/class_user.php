@@ -47,5 +47,42 @@ class User {
         // output
         return $items;
     }
+    public static function user_list($d = []) {
+        // vars
+        $search = isset($d['search']) && trim($d['search']) ? $d['search'] : '';
+        $offset = isset($d['offset']) && is_numeric($d['offset']) ? $d['offset'] : 0;
+        $limit = 20;
+        $items = [];
+        // where
+        $where = [];
+        if ($search) {
+            if(is_numeric($search)) $where[] = "phone LIKE '%".$search."%'";
+            else {
+                $where[] = "(email LIKE '%".$search."%' OR first_name LIKE '%".$search."%')";
+            }
+        }
+        $where = $where ? "WHERE ".implode(" AND ", $where) : "";
+        // info
+        $q = DB::query("SELECT user_id, plot_id, first_name, last_name, email, phone, last_login
+            FROM users ".$where." ORDER BY user_id LIMIT ".$offset.", ".$limit.";") or die (DB::error());
+        while ($row = DB::fetch_row($q)) {
+            $items[] = [
+                'id' => (int) $row['user_id'],
+                'plots' => $row['plot_id'],
+                'full_name' => $row['first_name'] . ' ' . $row['last_name'],
+                'email' => $row['email'],
+                'phone' => $row['phone'],
+                'last_login' => date('d.m.Y H:i:s', $row['last_login'])
+            ];
+        }
+        // paginator
+        $q = DB::query("SELECT count(*) FROM users ".$where.";");
+        $count = ($row = DB::fetch_row($q)) ? $row['count(*)'] : 0;
+        $url = 'users?';
+        if ($search) $url .= '&search='.$search;
+        paginator($count, $offset, $limit, $url, $paginator);
+        // output
+        return ['items' => $items, 'paginator' => $paginator];
+    }
 
 }

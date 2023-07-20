@@ -39,6 +39,7 @@ class Route {
         if (Session::$access != 1) controller_login();
         else if (Route::$path == 'logout') Session::logout();
         else if (Route::$path == 'plots') controller_plots();
+        else if (Route::$path == 'users') controller_users();
     }
 
     public static function route_call($path, $act, $data) {
