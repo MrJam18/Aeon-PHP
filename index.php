@@ -7,6 +7,7 @@ require('./includes/core/functions.php');
 
 init_classes();
 init_controllers_common();
+init_exceptions();
 
 DB::connect();
 

@@ -99,6 +99,12 @@ function request(data, callback) {
     xhr.onreadystatechange = () => {
         if (xhr.readyState !== 4) return;
         if (xhr.status === 200) callback(JSON.parse(xhr.responseText));
+        else {
+            if (xhr.status === 551 && xhr.responseText) {
+                const text = JSON.parse(xhr.responseText);
+                if(text.message) html('error_block', text.message);
+            }
+        }
         xhr = null;
     }
 }

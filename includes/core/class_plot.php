@@ -126,6 +126,15 @@ class Plot {
         return Plot::plots_fetch(['offset' => $offset]);
     }
 
+    public static function check_existing_plots(string $plotsIds): bool
+    {
+        $plotsArr = explode(', ', $plotsIds);
+        $in = str_repeat('?,', count($plotsArr) - 1) . '?';
+        $query = "SELECT COUNT(*) as count FROM plots WHERE number IN (" . $in . ");";
+        $row = DB::getOne($query, $plotsArr);
+        return $row['count'] == count($plotsArr);
+    }
+
     private static function plot_status_str($id) {
         if ($id == 1) return 'Reserved';
         if ($id == 2) return 'Sold';

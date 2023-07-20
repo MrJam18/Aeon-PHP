@@ -14,6 +14,12 @@ function init_controllers_common() {
         if (strstr($inc_file, '.php')) require('./includes/controllers_common/'.$inc_file);
     }
 }
+function init_exceptions() {
+    $includes_dir = opendir('./exceptions');
+    while (($inc_file = readdir($includes_dir)) != false) {
+        if (strstr($inc_file, '.php')) require('./exceptions/'.$inc_file);
+    }
+}
 
 function init_controllers_call() {
     $includes_dir = opendir('./includes/controllers_call');
